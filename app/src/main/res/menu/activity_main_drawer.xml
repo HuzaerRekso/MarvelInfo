@@ -5,11 +5,11 @@
         <item
             android:id="@+id/nav_char"
             android:icon="@mipmap/ic_char"
-            android:title="Import" />
+            android:title="Characters" />
         <item
             android:id="@+id/nav_comic"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:title="Comics" />
     </group>
 
     <item android:title="Offline">

@@ -1,6 +1,7 @@
 package id.sch.smktelkom_mlg.privateassignment.xirpl135.marvelcomic.adapter;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,10 +27,12 @@ public class CharAdapter extends RecyclerView.Adapter<CharAdapter.ViewHolder> {
 
     Context context;
     List<Char> chars = new ArrayList<>();
+    charListener charListener;
 
-    public CharAdapter(List<Char> chars, Context context) {
+    public CharAdapter(List<Char> chars, Context context, Fragment fragment) {
         this.chars = chars;
         this.context = context;
+        charListener = (charListener) fragment;
     }
 
     @Override
@@ -64,6 +67,10 @@ public class CharAdapter extends RecyclerView.Adapter<CharAdapter.ViewHolder> {
         return 0;
     }
 
+    public interface charListener {
+        void detail(int pos);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtCharName;
         TextView txtCharDesc;
@@ -74,6 +81,13 @@ public class CharAdapter extends RecyclerView.Adapter<CharAdapter.ViewHolder> {
             txtCharName = (TextView) itemView.findViewById(R.id.charName);
             txtCharDesc = (TextView) itemView.findViewById(R.id.charDesc);
             ivCharPict = (ImageView) itemView.findViewById(R.id.imageChar);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    charListener.detail(getAdapterPosition());
+                }
+            });
         }
     }
 }

@@ -1,6 +1,8 @@
 package id.sch.smktelkom_mlg.privateassignment.xirpl135.marvelcomic;
 
 
+import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,7 +28,7 @@ import id.sch.smktelkom_mlg.privateassignment.xirpl135.marvelcomic.service.Volle
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CharFragment extends Fragment {
+public class CharFragment extends Fragment implements CharAdapter.charListener {
 
     public CharAdapter charAdapter;
     public List<Char> charList = new ArrayList<>();
@@ -40,12 +42,12 @@ public class CharFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        charAdapter = new CharAdapter(charList, getActivity());
-
-        fillData();
+        charAdapter = new CharAdapter(charList, getContext(), this);
     }
 
     private void fillData() {
+        DialogFragment newProgressFragment = ProgressDialogFragment.newInstance("Loading");
+        newProgressFragment.show(getActivity().getFragmentManager(), "progress");
         String url = "https://gateway.marvel.com:443/v1/public/characters?ts=1&apikey=f4dbb78409bc6ed6f31319830b30a4d5&hash=1b4a1c0351f6be2a613dd55c4246f3d9";
         GsonGetRequest<Response> req = new GsonGetRequest<Response>(url, Response.class, null, new com.android.volley.Response.Listener<Response>() {
             @Override
@@ -61,7 +63,8 @@ public class CharFragment extends Fragment {
                 Log.e("CHAR FRAGMENT", "Error : ", error);
             }
         });
-        VolleySingleton.getInstance(getActivity()).addToRequestQueue(req);
+        VolleySingleton.getInstance(getActivity().getApplicationContext()).addToRequestQueue(req);
+        newProgressFragment.dismiss();
     }
 
     @Override
@@ -73,8 +76,16 @@ public class CharFragment extends Fragment {
         layoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(charAdapter);
+        fillData();
 
         return view;
     }
 
+    @Override
+    public void detail(int pos) {
+        Char chari = charList.get(pos);
+        Intent intent = new Intent(getActivity(), CharDetailActivity.class);
+        intent.putExtra("detail", chari);
+        startActivity(intent);
+    }
 }
