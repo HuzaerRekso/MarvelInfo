@@ -1,9 +1,9 @@
 package id.sch.smktelkom_mlg.privateassignment.xirpl135.marvelcomic;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +34,7 @@ public class ComsDetActivity extends AppCompatActivity implements CharAdapter.ch
     public int ID = 0;
     TextView txtNama, txtPrice;
     ImageView ivCom;
+    Comic comic = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +43,21 @@ public class ComsDetActivity extends AppCompatActivity implements CharAdapter.ch
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        comic = (Comic) getIntent().getSerializableExtra("comdetail");
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                for (int i = 0; i < comic.urls.size(); i++) {
+                    if (comic.urls.get(i).type.equals("detail")) {
+                        Uri webpage = Uri.parse(comic.urls.get(i).url);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+                        if (intent.resolveActivity(getPackageManager()) != null)
+                            startActivity(intent);
+                    }
+                }
             }
         });
-        Comic comic = (Comic) getIntent().getSerializableExtra("comdetail");
         Price price = null;
         if (comic.prices.size() > 1) {
             price = comic.prices.get(1);

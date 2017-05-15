@@ -46,12 +46,15 @@ public class ComicFragment extends Fragment implements ComAdapter.IcomAdapter {
 
     private static final String ARG_PARAM = "param";
     public List<Comic> comics = new ArrayList<>();
+    public Realm realm;
     ComAdapter adapter;
     Comic comic = null;
     TextView status;
+    Fav favsave = new Fav();
+    Bitmap bitmap = null;
+    byte[] gambar = new byte[102400];
     private int sort = 0;
-    private Realm realm;
-    private byte[] gambar = new byte[102400];
+
     public ComicFragment() {
         // Required empty public constructor
     }
@@ -76,6 +79,7 @@ public class ComicFragment extends Fragment implements ComAdapter.IcomAdapter {
         if (getArguments() != null) {
             this.sort = getArguments().getInt(ARG_PARAM);
         }
+        realm = Realm.getDefaultInstance();
         adapter = new ComAdapter(comics, getContext(), this);
     }
 
@@ -89,7 +93,6 @@ public class ComicFragment extends Fragment implements ComAdapter.IcomAdapter {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        realm = Realm.getDefaultInstance();
         fillData(this.sort);
 
         if (comics.isEmpty()) {
@@ -162,14 +165,12 @@ public class ComicFragment extends Fragment implements ComAdapter.IcomAdapter {
                     @Override
                     protected Void doInBackground(Void... voids) {
                         try {
-                            Bitmap bitmap = Glide
+                            bitmap = Glide
                                     .with(getActivity().getApplicationContext())
                                     .load(comic.thumbnail.path + "/landscape_xlarge.jpg")
                                     .asBitmap()
                                     .into(270, 200)
                                     .get();
-                            gambar = getBytes(bitmap);
-                            Log.d("ComicFragment", gambar.toString());
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         } catch (ExecutionException e) {
@@ -177,20 +178,24 @@ public class ComicFragment extends Fragment implements ComAdapter.IcomAdapter {
                         }
                         return null;
                     }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        gambar = getBytes(bitmap);
+                        Price price;
+                        if (comic.prices.size() > 1) {
+                            price = comic.prices.get(1);
+                        } else {
+                            price = comic.prices.get(0);
+                        }
+                        favsave = new Fav(comic.id, comic.title, comic.description, gambar, price.price);
+                        realm.beginTransaction();
+                        realm.insert(favsave);
+                        realm.commitTransaction();
+                    }
                 }.execute();
-                Price price;
-                if (comic.prices.size() > 1) {
-                    price = comic.prices.get(1);
-                } else {
-                    price = comic.prices.get(0);
-                }
-                List<Fav> favList = new ArrayList<>();
-                favList.add(new Fav(comic.id, comic.title, comic.description, gambar, price.price));
-                realm.beginTransaction();
-                realm.insert(favList);
-                realm.commitTransaction();
-                fab.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary));
                 Toast.makeText(getActivity(), comic.title + " berhasil masuk Favorite", Toast.LENGTH_LONG).show();
+                fab.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimary));
             } catch (Exception e) {
                 Log.e("ComicFragment", "Error : ", e);
             }

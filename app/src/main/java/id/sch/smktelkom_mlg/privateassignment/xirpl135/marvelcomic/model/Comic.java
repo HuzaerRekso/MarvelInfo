@@ -13,4 +13,5 @@ public class Comic implements Serializable {
     public String description;
     public Thumbnail thumbnail;
     public List<Price> prices;
+    public List<Url> urls;
 }
