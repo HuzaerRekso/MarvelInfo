@@ -1,4 +1,4 @@
-# MarvelInfo
+# Marvel Comic
 [Link APK](https://drive.google.com/file/d/0B-S794o5TEQxNmxjcmJpM2Qya3M/view?usp=sharing)
 
 ### Identitas
