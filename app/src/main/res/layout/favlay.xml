@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
@@ -16,16 +15,15 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/imageViewComic"
+            android:id="@+id/imageViewComicFav"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop" />
+            android:layout_height="200dp" />
 
         <TextView
-            android:id="@+id/textViewJudul"
+            android:id="@+id/textViewJudulFav"
             android:layout_width="fill_parent"
             android:layout_height="40dp"
-            android:layout_alignBottom="@id/imageViewComic"
+            android:layout_alignBottom="@id/imageViewComicFav"
             android:layout_marginLeft="16dp"
             android:background="#7F616161"
             android:maxLines="1"
@@ -34,52 +32,32 @@
             tools:text="Judul" />
 
         <TextView
-            android:id="@+id/textViewDeskripsi"
+            android:id="@+id/textViewDeskripsiFav"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageViewComic"
+            android:layout_below="@+id/imageViewComicFav"
             android:ellipsize="end"
             android:maxLines="1"
             android:padding="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             tools:text="Deskripsi" />
 
-        <!--<Button
-            android:id="@+id/buttonEdit"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textViewDeskripsi"
-            android:text="EDIT"
-            android:textColor="?attr/colorPrimary" />
-
         <Button
             android:id="@+id/buttonDelete"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textViewDeskripsi"
-            android:layout_marginLeft="16dp"
-            android:layout_toRightOf="@+id/buttonEdit"
+            android:layout_below="@id/textViewDeskripsiFav"
             android:text="DELETE"
-            android:textColor="?attr/colorAccent" />-->
-
-        <ImageButton
-            android:id="@+id/buttonFavorite"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_below="@+id/textViewDeskripsi"
-            android:tint="#757575"
-            app:srcCompat="@drawable/ic_favorite_black_24dp" />
+            android:textColor="@color/colorPrimary" />
 
         <TextView
-            android:id="@+id/textViewPrice"
+            android:id="@+id/textViewPriceFav"
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/textViewDeskripsi"
+            android:layout_below="@+id/textViewDeskripsiFav"
             android:padding="8dp"
             android:text="Price"
             android:textAlignment="center" />

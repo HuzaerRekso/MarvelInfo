@@ -3,17 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="id.sch.smktelkom_mlg.privateassignment.xirpl135.marvelcomic.ComicFragment">
+    tools:context="id.sch.smktelkom_mlg.privateassignment.xirpl135.marvelcomic.FavFragment">
 
     <TextView
-        android:id="@+id/textStatusCom"
+        android:id="@+id/textStatus"
         style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No items Available" />
+        android:text="No Items Available" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/comicView"
+        android:id="@+id/favlist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

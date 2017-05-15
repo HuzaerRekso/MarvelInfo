@@ -2,6 +2,7 @@ package id.sch.smktelkom_mlg.privateassignment.xirpl135.marvelcomic.adapter;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,9 @@ import java.util.List;
 
 import id.sch.smktelkom_mlg.privateassignment.xirpl135.marvelcomic.R;
 import id.sch.smktelkom_mlg.privateassignment.xirpl135.marvelcomic.model.Comic;
+import id.sch.smktelkom_mlg.privateassignment.xirpl135.marvelcomic.model.Fav;
 import id.sch.smktelkom_mlg.privateassignment.xirpl135.marvelcomic.model.Price;
+import io.realm.Realm;
 
 /**
  * Created by yobelchris on 5/12/2017.
@@ -27,10 +30,14 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
 
     public List<Comic> coms;
     Context context;
+    IcomAdapter icomAdapter;
+    private Realm realm;
 
     public ComAdapter(List<Comic> coms, Context context, Fragment fragment) {
         this.coms = coms;
         this.context = context;
+        this.icomAdapter = (IcomAdapter) fragment;
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -52,6 +59,10 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
         holder.nama.setText(comic.title);
         holder.deskripsi.setText(comic.description);
         holder.price.setText("$" + price.price);
+        Fav fav = realm.where(Fav.class).equalTo("id", comic.id).findFirst();
+        if (fav != null) {
+            holder.butFav.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary));
+        }
         Glide.with(context)
                 .load(comic.thumbnail.path + "/landscape_xlarge.jpg")
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -68,11 +79,17 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
         return 0;
     }
 
+    public interface IcomAdapter {
+        void detailCom(int pos);
+
+        void doSave(int pos, ImageButton fab);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView nama;
         TextView deskripsi;
         TextView price;
-        ImageButton butFav, butBuy;
+        ImageButton butFav;
         ImageView ivCom;
 
         public ViewHolder(View itemView) {
@@ -81,8 +98,21 @@ public class ComAdapter extends RecyclerView.Adapter<ComAdapter.ViewHolder> {
             deskripsi = (TextView) itemView.findViewById(R.id.textViewDeskripsi);
             price = (TextView) itemView.findViewById(R.id.textViewPrice);
             butFav = (ImageButton) itemView.findViewById(R.id.buttonFavorite);
-            butBuy = (ImageButton) itemView.findViewById(R.id.buttonBuy);
             ivCom = (ImageView) itemView.findViewById(R.id.imageViewComic);
+
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    icomAdapter.detailCom(getAdapterPosition());
+                }
+            });
+            butFav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    icomAdapter.doSave(getAdapterPosition(), butFav);
+                }
+            });
         }
     }
 }

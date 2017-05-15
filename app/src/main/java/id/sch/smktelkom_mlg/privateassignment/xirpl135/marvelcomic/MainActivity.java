@@ -31,6 +31,11 @@ public class MainActivity extends AppCompatActivity
 
         changePage(R.id.nav_char);
         navigationView.setCheckedItem(R.id.nav_char);
+
+        if (getIntent().getStringExtra("error") != null && getIntent().getStringExtra("error").equals("Timeout")) {
+            changePage(R.id.nav_fav);
+            navigationView.setCheckedItem(R.id.nav_fav);
+        }
     }
 
     @Override
@@ -60,7 +65,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_comic) {
             fragment = new ComicFragment();
         } else if (id == R.id.nav_fav) {
-
+            fragment = new FavFragment();
         }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commitNow();

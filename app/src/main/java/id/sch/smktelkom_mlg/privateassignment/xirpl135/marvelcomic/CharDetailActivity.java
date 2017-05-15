@@ -100,6 +100,8 @@ public class CharDetailActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        Char aChar = (Char) getIntent().getSerializableExtra("detail");
+
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -109,7 +111,9 @@ public class CharDetailActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if (position == 0) {
-                return new DetailFragment().newInstance((Char) getIntent().getSerializableExtra("detail"));
+                return new DetailFragment().newInstance(aChar);
+            } else if (position == 1) {
+                return new ComicFragment().newInstance(aChar.id);
             }
             return PlaceholderFragment.newInstance(position + 1);
         }

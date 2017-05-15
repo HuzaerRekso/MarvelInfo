@@ -1,7 +1,7 @@
 package id.sch.smktelkom_mlg.privateassignment.xirpl135.marvelcomic;
 
 
-import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,7 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class CharFragment extends Fragment implements CharAdapter.charListener {
         // Required empty public constructor
     }
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +49,9 @@ public class CharFragment extends Fragment implements CharAdapter.charListener {
     }
 
     private void fillData() {
-        DialogFragment newProgressFragment = ProgressDialogFragment.newInstance("Loading");
-        newProgressFragment.show(getActivity().getFragmentManager(), "progress");
+        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading data...");
+        progressDialog.show();
         String url = "https://gateway.marvel.com:443/v1/public/characters?ts=1&apikey=f4dbb78409bc6ed6f31319830b30a4d5&hash=1b4a1c0351f6be2a613dd55c4246f3d9";
         GsonGetRequest<Response> req = new GsonGetRequest<Response>(url, Response.class, null, new com.android.volley.Response.Listener<Response>() {
             @Override
@@ -56,15 +60,27 @@ public class CharFragment extends Fragment implements CharAdapter.charListener {
                     charList.addAll(response.data.results);
                 }
                 charAdapter.notifyDataSetChanged();
+                progressDialog.dismiss();
             }
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("CHAR FRAGMENT", "Error : ", error);
+                if (error.networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        // Show timeout error message
+                        Toast.makeText(getContext(),
+                                "Oops. Timeout error!",
+                                Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        intent.putExtra("error", "Timeout");
+                        startActivity(intent);
+                    }
+                }
+                progressDialog.dismiss();
             }
         });
         VolleySingleton.getInstance(getActivity().getApplicationContext()).addToRequestQueue(req);
-        newProgressFragment.dismiss();
     }
 
     @Override
